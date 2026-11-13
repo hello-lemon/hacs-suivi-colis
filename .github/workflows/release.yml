@@ -1,0 +1,39 @@
+name: Release
+
+# Every push to main (i.e. every merged PR) publishes a new version:
+# bumps manifest.json, prepends CHANGELOG.md, tags vX.Y.Z and creates the
+# GitHub release HACS installs from. See .github/scripts/release.py for the rules.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    # The release commit is pushed with GITHUB_TOKEN, which never re-triggers
+    # workflows; this guard also covers pushes made with another token.
+    if: "!startsWith(github.event.head_commit.message, 'chore(release):')"
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
+      - name: Configure git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+      - name: Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python .github/scripts/release.py

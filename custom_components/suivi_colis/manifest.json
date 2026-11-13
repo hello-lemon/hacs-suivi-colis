@@ -1,13 +1,24 @@
 {
   "domain": "suivi_colis",
   "name": "Suivi de Colis",
-  "codeowners": ["@hellolemon"],
+  "after_dependencies": [
+    "cloud"
+  ],
+  "codeowners": [
+    "@hellolemon"
+  ],
   "config_flow": true,
-  "single_config_entry": true,
-  "documentation": "https://github.com/hello-lemon/suivi-colis",
+  "dependencies": [
+    "frontend",
+    "http",
+    "webhook"
+  ],
+  "documentation": "https://github.com/hello-lemon/hacs-suivi-colis",
   "iot_class": "cloud_polling",
-  "issue_tracker": "https://github.com/hello-lemon/suivi-colis/issues",
-  "dependencies": ["frontend", "http"],
-  "requirements": ["imap-tools>=1.7.0"],
-  "version": "1.0.2"
+  "issue_tracker": "https://github.com/hello-lemon/hacs-suivi-colis/issues",
+  "requirements": [
+    "imap-tools>=1.7.0"
+  ],
+  "single_config_entry": true,
+  "version": "1.2.0"
 }

@@ -1,0 +1,291 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "17track API Key",
+        "description": "Enter your 17track API key. Create an account on {api_url} to get one.",
+        "data": {
+          "api_key": "API Key"
+        }
+      },
+      "mailboxes": {
+        "title": "Email tracking (optional)",
+        "description": "Add one or more IMAP mailboxes to detect tracking numbers automatically. You can add, edit or remove mailboxes later from the options.\n\nConfigured mailboxes:\n{mailboxes}",
+        "menu_options": {
+          "mailbox_provider": "➕ Add a mailbox",
+          "finish": "✔️ Finish"
+        }
+      },
+      "mailbox_provider": {
+        "title": "Add a mailbox",
+        "description": "Pick your provider to prefill server, port and encryption, or \"Other\" to enter everything yourself.",
+        "data": {
+          "provider": "Provider"
+        }
+      },
+      "mailbox_connection": {
+        "title": "IMAP connection",
+        "description": "The connection is tested when you submit.\n\nGmail, Yahoo, iCloud: use an **app password** (the account password is rejected). Microsoft Outlook/Hotmail only accepts OAuth2 on most accounts.",
+        "data": {
+          "name": "Mailbox name",
+          "server": "IMAP server",
+          "security": "Encryption",
+          "port": "Port",
+          "verify_ssl": "Verify server certificate",
+          "username": "Username",
+          "password": "Password",
+          "timeout": "Timeout"
+        },
+        "data_description": {
+          "name": "Shown in the mailbox list. Defaults to the username.",
+          "port": "Leave empty for the standard port: 993 for SSL/TLS, 143 for STARTTLS or no encryption.",
+          "verify_ssl": "Only disable for a local server with a self-signed certificate (Proton Mail Bridge, home server…).",
+          "username": "Often the full email address.",
+          "password": "When editing, leave empty to keep the current password."
+        }
+      },
+      "mailbox_settings": {
+        "title": "Email scanning",
+        "description": "Connected to {server} ({folder_count} folders found).",
+        "data": {
+          "folders": "Folders to scan",
+          "dedicated": "Dedicated mailbox",
+          "search_days": "Scan emails from the last",
+          "max_emails": "Max emails per folder",
+          "unseen_only": "Unread emails only",
+          "mark_seen": "Mark emails containing a tracking number as read",
+          "enabled": "Mailbox enabled"
+        },
+        "data_description": {
+          "folders": "You can also type a folder name.",
+          "dedicated": "Parse every email, not only those from known carriers. Ideal for an address that only receives shipping notifications.",
+          "search_days": "0 = today only.",
+          "max_emails": "Most recent first. 0 = no limit.",
+          "enabled": "Uncheck to pause scanning without deleting the mailbox."
+        }
+      }
+    },
+    "error": {
+      "invalid_api_key": "Invalid 17track API key",
+      "cannot_connect": "Cannot connect to 17track API",
+      "imap_auth_failed": "Username or password rejected by the server ({error_detail})",
+      "imap_certificate": "Invalid or self-signed server certificate. Disable \"Verify server certificate\" if you trust this server ({error_detail})",
+      "imap_ssl_error": "SSL/TLS error: check the encryption mode and port ({error_detail})",
+      "imap_unknown_host": "Server not found: check the address ({error_detail})",
+      "imap_timeout": "Server not responding: check port and encryption ({error_detail})",
+      "imap_refused": "Connection refused: check the port ({error_detail})",
+      "imap_cannot_connect": "Cannot reach the server ({error_detail})",
+      "imap_connection_failed": "IMAP connection failed ({error_detail})",
+      "mailbox_exists": "This mailbox is already configured",
+      "password_required": "Password required",
+      "no_folder": "Select at least one folder",
+      "unknown": "Unknown error, check logs"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Suivi de Colis — Options",
+        "description": "Configured mailboxes:\n{mailboxes}",
+        "menu_options": {
+          "general": "⚙️ General settings",
+          "mailbox_provider": "➕ Add a mailbox",
+          "mailbox_edit": "✏️ Edit a mailbox",
+          "mailbox_remove": "🗑️ Remove mailboxes",
+          "webhook": "📡 Real-time notifications (webhook)"
+        }
+      },
+      "general": {
+        "title": "General settings",
+        "data": {
+          "archive_after_days": "Auto-archive delivered after (days, 0 = disabled)",
+          "email_interval": "Email check interval"
+        }
+      },
+      "mailbox_edit": {
+        "title": "Edit a mailbox",
+        "data": {
+          "id": "Mailbox"
+        }
+      },
+      "mailbox_remove": {
+        "title": "Remove mailboxes",
+        "description": "Packages already detected are kept.",
+        "data": {
+          "id": "Mailboxes to remove"
+        }
+      },
+      "mailbox_provider": {
+        "title": "Add a mailbox",
+        "description": "Pick your provider to prefill server, port and encryption, or \"Other\" to enter everything yourself.",
+        "data": {
+          "provider": "Provider"
+        }
+      },
+      "mailbox_connection": {
+        "title": "IMAP connection",
+        "description": "The connection is tested when you submit.\n\nGmail, Yahoo, iCloud: use an **app password** (the account password is rejected). Microsoft Outlook/Hotmail only accepts OAuth2 on most accounts.",
+        "data": {
+          "name": "Mailbox name",
+          "server": "IMAP server",
+          "security": "Encryption",
+          "port": "Port",
+          "verify_ssl": "Verify server certificate",
+          "username": "Username",
+          "password": "Password",
+          "timeout": "Timeout"
+        },
+        "data_description": {
+          "name": "Shown in the mailbox list. Defaults to the username.",
+          "port": "Leave empty for the standard port: 993 for SSL/TLS, 143 for STARTTLS or no encryption.",
+          "verify_ssl": "Only disable for a local server with a self-signed certificate (Proton Mail Bridge, home server…).",
+          "username": "Often the full email address.",
+          "password": "When editing, leave empty to keep the current password."
+        }
+      },
+      "mailbox_settings": {
+        "title": "Email scanning",
+        "description": "Connected to {server} ({folder_count} folders found).",
+        "data": {
+          "folders": "Folders to scan",
+          "dedicated": "Dedicated mailbox",
+          "search_days": "Scan emails from the last",
+          "max_emails": "Max emails per folder",
+          "unseen_only": "Unread emails only",
+          "mark_seen": "Mark emails containing a tracking number as read",
+          "enabled": "Mailbox enabled"
+        },
+        "data_description": {
+          "folders": "You can also type a folder name.",
+          "dedicated": "Parse every email, not only those from known carriers. Ideal for an address that only receives shipping notifications.",
+          "search_days": "0 = today only.",
+          "max_emails": "Most recent first. 0 = no limit.",
+          "enabled": "Uncheck to pause scanning without deleting the mailbox."
+        }
+      },
+      "webhook": {
+        "title": "Real-time notifications (webhook)",
+        "description": "17track can notify Home Assistant as soon as a package changes, instead of waiting for the next 30-minute cycle.\n\n1. Enable the option below.\n2. Copy this URL: `{webhook_url}`\n3. Paste it in the 17track dashboard ({dashboard_url}), WebHook section, then save and test.\n\nHome Assistant must be reachable from the Internet (Nabu Casa or a configured external URL). Calls are verified with the 17track signature.",
+        "data": {
+          "webhook_enabled": "Receive 17track notifications"
+        }
+      }
+    },
+    "error": {
+      "imap_auth_failed": "Username or password rejected by the server ({error_detail})",
+      "imap_certificate": "Invalid or self-signed server certificate. Disable \"Verify server certificate\" if you trust this server ({error_detail})",
+      "imap_ssl_error": "SSL/TLS error: check the encryption mode and port ({error_detail})",
+      "imap_unknown_host": "Server not found: check the address ({error_detail})",
+      "imap_timeout": "Server not responding: check port and encryption ({error_detail})",
+      "imap_refused": "Connection refused: check the port ({error_detail})",
+      "imap_cannot_connect": "Cannot reach the server ({error_detail})",
+      "imap_connection_failed": "IMAP connection failed ({error_detail})",
+      "mailbox_exists": "This mailbox is already configured",
+      "password_required": "Password required",
+      "no_folder": "Select at least one folder",
+      "no_external_url": "No external URL: set up Nabu Casa or an external URL in Settings > System > Network"
+    }
+  },
+  "selector": {
+    "provider": {
+      "options": {
+        "custom": "Other (manual setup)",
+        "gmail": "Gmail",
+        "outlook": "Outlook / Hotmail / Microsoft 365",
+        "yahoo": "Yahoo Mail",
+        "icloud": "iCloud Mail",
+        "orange": "Orange / Wanadoo",
+        "free": "Free",
+        "sfr": "SFR / Neuf",
+        "laposte": "La Poste (laposte.net)",
+        "gmx": "GMX",
+        "ionos": "IONOS",
+        "ovh": "OVHcloud (shared hosting mail)",
+        "proton_bridge": "Proton Mail (via Proton Mail Bridge)"
+      }
+    },
+    "security": {
+      "options": {
+        "ssl": "SSL/TLS (recommended, port 993)",
+        "starttls": "STARTTLS (port 143)",
+        "none": "No encryption (not recommended)"
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "package": {
+        "state": {
+          "unknown": "Unknown",
+          "info_received": "Info received",
+          "in_transit": "In transit",
+          "out_for_delivery": "Out for delivery",
+          "available_for_pickup": "Available for pickup",
+          "delivered": "Delivered",
+          "delivery_failure": "Delivery failure",
+          "exception": "Exception",
+          "expired": "Expired",
+          "not_found": "Not found"
+        }
+      },
+      "in_progress": {
+        "name": "Packages in progress"
+      },
+      "out_for_delivery_today": {
+        "name": "Deliveries today"
+      },
+      "to_pick_up": {
+        "name": "Packages to pick up"
+      },
+      "next_delivery": {
+        "name": "Next delivery"
+      },
+      "quota_remain": {
+        "name": "Remaining 17track quota"
+      },
+      "last_refresh": {
+        "name": "Last refresh"
+      }
+    },
+    "binary_sensor": {
+      "delivery_problem": {
+        "name": "Delivery problem"
+      },
+      "mailbox": {
+        "name": "Mailbox {name}"
+      }
+    },
+    "event": {
+      "status_changed": {
+        "name": "Status change",
+        "state_attributes": {
+          "event_type": {
+            "state": {
+              "unknown": "Unknown",
+              "info_received": "Info received",
+              "in_transit": "In transit",
+              "out_for_delivery": "Out for delivery",
+              "available_for_pickup": "Available for pickup",
+              "delivered": "Delivered",
+              "delivery_failure": "Delivery failure",
+              "exception": "Exception",
+              "expired": "Expired",
+              "not_found": "Not found"
+            }
+          }
+        }
+      }
+    }
+  },
+  "exceptions": {
+    "carrier_required": {
+      "message": "Provide a carrier or a 17track carrier code."
+    },
+    "package_not_found": {
+      "message": "Package {tracking_number} is not tracked."
+    },
+    "change_carrier_failed": {
+      "message": "17track refused the carrier change: {error}"
+    }
+  }
+}

@@ -60,3 +60,68 @@ refresh:
 archive_delivered:
   name: Archiver les livrés
   description: Archiver tous les colis marqués comme livrés
+
+change_carrier:
+  name: Changer de transporteur
+  description: >-
+    Suivre un colis chez un autre transporteur (transporteur mal détecté).
+    17track limite à 5 changements par colis.
+  fields:
+    tracking_number:
+      name: Numéro de suivi
+      description: Le numéro de suivi du colis
+      required: true
+      example: "CH514085194DE"
+      selector:
+        text:
+    carrier:
+      name: Transporteur
+      description: Nouveau transporteur
+      required: false
+      example: "dhl_paket"
+      selector:
+        select:
+          options:
+            - label: "La Poste / Colissimo"
+              value: "colissimo"
+            - label: "Chronopost"
+              value: "chronopost"
+            - label: "Colis Privé"
+              value: "colisprive"
+            - label: "Mondial Relay"
+              value: "mondialrelay"
+            - label: "Relais Colis"
+              value: "relaiscolis"
+            - label: "DPD France"
+              value: "dpd"
+            - label: "GLS France"
+              value: "gls"
+            - label: "UPS"
+              value: "ups"
+            - label: "FedEx"
+              value: "fedex"
+            - label: "TNT France"
+              value: "tnt"
+            - label: "DHL Paket / Deutsche Post"
+              value: "dhl_paket"
+            - label: "DHL Express"
+              value: "dhl_express"
+            - label: "Amazon Shipping (FR)"
+              value: "amazon"
+            - label: "Vinted Go"
+              value: "vintedgo"
+            - label: "Cainiao (AliExpress)"
+              value: "cainiao"
+    carrier_code:
+      name: Code transporteur 17track
+      description: >-
+        Pour un transporteur absent de la liste : son code 17track (colonne
+        « key » de la liste des transporteurs 17track). Prioritaire sur le
+        champ Transporteur.
+      required: false
+      example: 100304
+      selector:
+        number:
+          min: 1
+          max: 999999
+          mode: box

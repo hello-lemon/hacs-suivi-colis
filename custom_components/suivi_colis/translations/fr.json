@@ -3,29 +3,82 @@
     "step": {
       "user": {
         "title": "Clé API 17track",
-        "description": "Entrez votre clé API 17track. Obtenez-en une gratuitement sur https://api.17track.net",
+        "description": "Entrez votre clé API 17track. Créez un compte sur {api_url} pour en obtenir une.",
         "data": {
           "api_key": "Clé API"
         }
       },
-      "imap": {
-        "title": "Suivi par email (Optionnel)",
-        "description": "Configurez IMAP pour détecter automatiquement les numéros de suivi depuis vos emails. Laissez le serveur vide pour ignorer.",
+      "mailboxes": {
+        "title": "Suivi par email (optionnel)",
+        "description": "Ajoutez une ou plusieurs boîtes mail IMAP pour détecter automatiquement les numéros de suivi. Vous pourrez en ajouter, modifier ou supprimer plus tard depuis les options.\n\nBoîtes configurées :\n{mailboxes}",
+        "menu_options": {
+          "mailbox_provider": "➕ Ajouter une boîte mail",
+          "finish": "✔️ Terminer"
+        }
+      },
+      "mailbox_provider": {
+        "title": "Ajouter une boîte mail",
+        "description": "Choisissez votre fournisseur pour préremplir le serveur, le port et le chiffrement. Choisissez « Autre » pour tout saisir vous-même.",
         "data": {
-          "imap_server": "Serveur IMAP",
-          "imap_port": "Port",
-          "imap_user": "Identifiant",
-          "imap_password": "Mot de passe",
-          "imap_folder": "Dossier",
-          "imap_ssl": "Utiliser SSL",
-          "imap_dedicated": "Boîte dédiée (analyse tous les mails, pas seulement les transporteurs connus)"
+          "provider": "Fournisseur"
+        }
+      },
+      "mailbox_connection": {
+        "title": "Connexion IMAP",
+        "description": "La connexion est testée à la validation.\n\nGmail, Yahoo, iCloud : utilisez un **mot de passe d'application** (le mot de passe du compte est refusé). Microsoft Outlook/Hotmail n'accepte plus que l'authentification OAuth2 sur la plupart des comptes.",
+        "data": {
+          "name": "Nom de la boîte",
+          "server": "Serveur IMAP",
+          "security": "Chiffrement",
+          "port": "Port",
+          "verify_ssl": "Vérifier le certificat du serveur",
+          "username": "Identifiant",
+          "password": "Mot de passe",
+          "timeout": "Délai d'attente"
+        },
+        "data_description": {
+          "name": "Affiché dans la liste des boîtes. Par défaut : l'identifiant.",
+          "port": "Laisser vide pour le port standard : 993 en SSL/TLS, 143 en STARTTLS ou sans chiffrement.",
+          "verify_ssl": "À désactiver uniquement pour un serveur local avec certificat auto-signé (Proton Mail Bridge, serveur maison…).",
+          "username": "Souvent l'adresse email complète.",
+          "password": "En modification, laisser vide pour conserver le mot de passe actuel."
+        }
+      },
+      "mailbox_settings": {
+        "title": "Analyse des emails",
+        "description": "Connexion réussie à {server} ({folder_count} dossiers trouvés).",
+        "data": {
+          "folders": "Dossiers à analyser",
+          "dedicated": "Boîte dédiée",
+          "search_days": "Analyser les emails des derniers",
+          "max_emails": "Nombre max. d'emails par dossier",
+          "unseen_only": "Uniquement les emails non lus",
+          "mark_seen": "Marquer comme lus les emails contenant un numéro de suivi",
+          "enabled": "Boîte active"
+        },
+        "data_description": {
+          "folders": "Vous pouvez aussi saisir un nom de dossier manuellement.",
+          "dedicated": "Analyse tous les emails, pas seulement ceux des transporteurs connus. Idéal pour une adresse qui reçoit uniquement des notifications de livraison.",
+          "search_days": "0 = aujourd'hui seulement.",
+          "max_emails": "Emails les plus récents d'abord. 0 = sans limite.",
+          "enabled": "Décocher pour suspendre l'analyse sans supprimer la boîte."
         }
       }
     },
     "error": {
       "invalid_api_key": "Clé API 17track invalide",
       "cannot_connect": "Impossible de se connecter à l'API 17track",
-      "imap_connection_failed": "Connexion IMAP échouée",
+      "imap_auth_failed": "Identifiant ou mot de passe refusé par le serveur ({error_detail})",
+      "imap_certificate": "Certificat du serveur invalide ou auto-signé. Désactivez « Vérifier le certificat » si vous faites confiance à ce serveur ({error_detail})",
+      "imap_ssl_error": "Erreur SSL/TLS : vérifiez le chiffrement choisi et le port ({error_detail})",
+      "imap_unknown_host": "Serveur introuvable : vérifiez l'adresse ({error_detail})",
+      "imap_timeout": "Le serveur ne répond pas : vérifiez le port et le chiffrement ({error_detail})",
+      "imap_refused": "Connexion refusée : vérifiez le port ({error_detail})",
+      "imap_cannot_connect": "Impossible de joindre le serveur ({error_detail})",
+      "imap_connection_failed": "Connexion IMAP échouée ({error_detail})",
+      "mailbox_exists": "Cette boîte mail est déjà configurée",
+      "password_required": "Mot de passe requis",
+      "no_folder": "Choisissez au moins un dossier",
       "unknown": "Erreur inconnue, vérifiez les logs"
     }
   },
@@ -33,18 +86,206 @@
     "step": {
       "init": {
         "title": "Suivi de Colis — Options",
+        "description": "Boîtes mail configurées :\n{mailboxes}",
+        "menu_options": {
+          "general": "⚙️ Paramètres généraux",
+          "mailbox_provider": "➕ Ajouter une boîte mail",
+          "mailbox_edit": "✏️ Modifier une boîte mail",
+          "mailbox_remove": "🗑️ Supprimer des boîtes mail",
+          "webhook": "📡 Notifications en temps réel (webhook)"
+        }
+      },
+      "general": {
+        "title": "Paramètres généraux",
         "data": {
           "archive_after_days": "Archiver les livrés après (jours, 0 = désactivé)",
-          "email_interval": "Intervalle de vérification emails (minutes)",
-          "imap_server": "Serveur IMAP",
-          "imap_port": "Port",
-          "imap_user": "Identifiant",
-          "imap_password": "Mot de passe",
-          "imap_folder": "Dossier",
-          "imap_ssl": "Utiliser SSL",
-          "imap_dedicated": "Boîte dédiée (analyse tous les mails, pas seulement les transporteurs connus)"
+          "email_interval": "Intervalle de vérification des emails"
+        }
+      },
+      "mailbox_edit": {
+        "title": "Modifier une boîte mail",
+        "data": {
+          "id": "Boîte mail"
+        }
+      },
+      "mailbox_remove": {
+        "title": "Supprimer des boîtes mail",
+        "description": "Les colis déjà détectés ne sont pas supprimés.",
+        "data": {
+          "id": "Boîtes à supprimer"
+        }
+      },
+      "mailbox_provider": {
+        "title": "Ajouter une boîte mail",
+        "description": "Choisissez votre fournisseur pour préremplir le serveur, le port et le chiffrement. Choisissez « Autre » pour tout saisir vous-même.",
+        "data": {
+          "provider": "Fournisseur"
+        }
+      },
+      "mailbox_connection": {
+        "title": "Connexion IMAP",
+        "description": "La connexion est testée à la validation.\n\nGmail, Yahoo, iCloud : utilisez un **mot de passe d'application** (le mot de passe du compte est refusé). Microsoft Outlook/Hotmail n'accepte plus que l'authentification OAuth2 sur la plupart des comptes.",
+        "data": {
+          "name": "Nom de la boîte",
+          "server": "Serveur IMAP",
+          "security": "Chiffrement",
+          "port": "Port",
+          "verify_ssl": "Vérifier le certificat du serveur",
+          "username": "Identifiant",
+          "password": "Mot de passe",
+          "timeout": "Délai d'attente"
+        },
+        "data_description": {
+          "name": "Affiché dans la liste des boîtes. Par défaut : l'identifiant.",
+          "port": "Laisser vide pour le port standard : 993 en SSL/TLS, 143 en STARTTLS ou sans chiffrement.",
+          "verify_ssl": "À désactiver uniquement pour un serveur local avec certificat auto-signé (Proton Mail Bridge, serveur maison…).",
+          "username": "Souvent l'adresse email complète.",
+          "password": "En modification, laisser vide pour conserver le mot de passe actuel."
+        }
+      },
+      "mailbox_settings": {
+        "title": "Analyse des emails",
+        "description": "Connexion réussie à {server} ({folder_count} dossiers trouvés).",
+        "data": {
+          "folders": "Dossiers à analyser",
+          "dedicated": "Boîte dédiée",
+          "search_days": "Analyser les emails des derniers",
+          "max_emails": "Nombre max. d'emails par dossier",
+          "unseen_only": "Uniquement les emails non lus",
+          "mark_seen": "Marquer comme lus les emails contenant un numéro de suivi",
+          "enabled": "Boîte active"
+        },
+        "data_description": {
+          "folders": "Vous pouvez aussi saisir un nom de dossier manuellement.",
+          "dedicated": "Analyse tous les emails, pas seulement ceux des transporteurs connus. Idéal pour une adresse qui reçoit uniquement des notifications de livraison.",
+          "search_days": "0 = aujourd'hui seulement.",
+          "max_emails": "Emails les plus récents d'abord. 0 = sans limite.",
+          "enabled": "Décocher pour suspendre l'analyse sans supprimer la boîte."
+        }
+      },
+      "webhook": {
+        "title": "Notifications en temps réel (webhook)",
+        "description": "17track peut prévenir Home Assistant dès qu'un colis change, au lieu d'attendre le prochain cycle de 30 minutes.\n\n1. Activez l'option ci-dessous.\n2. Copiez cette URL : `{webhook_url}`\n3. Collez-la dans le tableau de bord 17track ({dashboard_url}), section WebHook, puis enregistrez et testez.\n\nHome Assistant doit être joignable depuis Internet (Nabu Casa ou URL externe configurée). Les appels sont vérifiés avec la signature 17track.",
+        "data": {
+          "webhook_enabled": "Recevoir les notifications 17track"
         }
       }
+    },
+    "error": {
+      "imap_auth_failed": "Identifiant ou mot de passe refusé par le serveur ({error_detail})",
+      "imap_certificate": "Certificat du serveur invalide ou auto-signé. Désactivez « Vérifier le certificat » si vous faites confiance à ce serveur ({error_detail})",
+      "imap_ssl_error": "Erreur SSL/TLS : vérifiez le chiffrement choisi et le port ({error_detail})",
+      "imap_unknown_host": "Serveur introuvable : vérifiez l'adresse ({error_detail})",
+      "imap_timeout": "Le serveur ne répond pas : vérifiez le port et le chiffrement ({error_detail})",
+      "imap_refused": "Connexion refusée : vérifiez le port ({error_detail})",
+      "imap_cannot_connect": "Impossible de joindre le serveur ({error_detail})",
+      "imap_connection_failed": "Connexion IMAP échouée ({error_detail})",
+      "mailbox_exists": "Cette boîte mail est déjà configurée",
+      "password_required": "Mot de passe requis",
+      "no_folder": "Choisissez au moins un dossier",
+      "no_external_url": "Pas d'URL externe : configurez Nabu Casa ou une URL externe dans Paramètres > Système > Réseau"
+    }
+  },
+  "selector": {
+    "provider": {
+      "options": {
+        "custom": "Autre (configuration manuelle)",
+        "gmail": "Gmail",
+        "outlook": "Outlook / Hotmail / Microsoft 365",
+        "yahoo": "Yahoo Mail",
+        "icloud": "iCloud Mail",
+        "orange": "Orange / Wanadoo",
+        "free": "Free",
+        "sfr": "SFR / Neuf",
+        "laposte": "La Poste (laposte.net)",
+        "gmx": "GMX",
+        "ionos": "IONOS",
+        "ovh": "OVHcloud (mail mutualisé)",
+        "proton_bridge": "Proton Mail (via Proton Mail Bridge)"
+      }
+    },
+    "security": {
+      "options": {
+        "ssl": "SSL/TLS (recommandé, port 993)",
+        "starttls": "STARTTLS (port 143)",
+        "none": "Aucun chiffrement (déconseillé)"
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "package": {
+        "state": {
+          "unknown": "Inconnu",
+          "info_received": "Expédition annoncée",
+          "in_transit": "En transit",
+          "out_for_delivery": "En livraison",
+          "available_for_pickup": "À retirer",
+          "delivered": "Livré",
+          "delivery_failure": "Échec de livraison",
+          "exception": "Problème",
+          "expired": "Suivi expiré",
+          "not_found": "Introuvable"
+        }
+      },
+      "in_progress": {
+        "name": "Colis en cours"
+      },
+      "out_for_delivery_today": {
+        "name": "Livraisons aujourd'hui"
+      },
+      "to_pick_up": {
+        "name": "Colis à retirer"
+      },
+      "next_delivery": {
+        "name": "Prochaine livraison"
+      },
+      "quota_remain": {
+        "name": "Quota 17track restant"
+      },
+      "last_refresh": {
+        "name": "Dernière actualisation"
+      }
+    },
+    "binary_sensor": {
+      "delivery_problem": {
+        "name": "Problème de livraison"
+      },
+      "mailbox": {
+        "name": "Boîte mail {name}"
+      }
+    },
+    "event": {
+      "status_changed": {
+        "name": "Changement de statut",
+        "state_attributes": {
+          "event_type": {
+            "state": {
+              "unknown": "Inconnu",
+              "info_received": "Expédition annoncée",
+              "in_transit": "En transit",
+              "out_for_delivery": "En livraison",
+              "available_for_pickup": "À retirer",
+              "delivered": "Livré",
+              "delivery_failure": "Échec de livraison",
+              "exception": "Problème",
+              "expired": "Suivi expiré",
+              "not_found": "Introuvable"
+            }
+          }
+        }
+      }
+    }
+  },
+  "exceptions": {
+    "carrier_required": {
+      "message": "Indiquez un transporteur ou un code transporteur 17track."
+    },
+    "package_not_found": {
+      "message": "Le colis {tracking_number} n'est pas suivi."
+    },
+    "change_carrier_failed": {
+      "message": "17track a refusé le changement de transporteur : {error}"
     }
   }
 }
